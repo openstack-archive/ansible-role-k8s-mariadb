@@ -1,0 +1,25 @@
+- name: Delete mariadb deployment 
+  k8s_v1beta1_stateful_set:
+    host: "{{coe_host}}"
+    context: "{{kube_context}}"
+    kubeconfig: "{{config_file}}"
+    name: mariadb
+    namespace: openstack 
+    state: absent 
+
+- name: Delete mariadb service 
+  k8s_v1_service:
+    host: "{{coe_host}}"
+    context: "{{kube_context}}"
+    kubeconfig: "{{config_file}}"
+    name: mariadb
+    namespace: openstack 
+    state: absent 
+
+- name: Delete mariadb configmap 
+  k8s_v1_namespace:
+    host: "{{coe_host}}"
+    context: "{{kube_context}}"
+    kubeconfig: "{{config_file}}"
+    name: mariadb
+    state: absent
