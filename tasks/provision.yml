@@ -1,15 +1,15 @@
-- name: Create mariadb configmaps 
+- name: Create mariadb configmaps
   ignore_errors: yes
   k8s_v1_config_map:
     host: "{{coe_host}}"
     context: "{{kube_context}}"
     kubeconfig: "{{config_file}}"
-    name: mariadb 
-    namespace: openstack 
+    name: mariadb
+    namespace: openstack
     state: present
     debug: yes
     labels:
-      service: mariadb 
+      service: mariadb
     data:
       kolla-config: |
         {
@@ -20,48 +20,50 @@
         [mysqld]
         pid-file=/var/lib/mysql/mariadb.pid
 
-- name: Create mariadb service 
+- name: Create mariadb service
   k8s_v1_service:
     host: "{{coe_host}}"
     context: "{{kube_context}}"
     kubeconfig: "{{config_file}}"
     name: mariadb
-    namespace: openstack 
+    namespace: openstack
     state: present
     ports:
-      - port: 3306 
+      - port: 3306
         name: db
     selector:
-      app: mariadb 
+      app: mariadb
     labels:
-      app: mariadb 
+      app: mariadb
     debug: yes
     annotations:
       service.alpha.kubernetes.io/tolerate-unready-endpoints: "false"
-  register: create_service 
+  register: create_service
 
-- debug: var=create_service
+- debug:
+    var: create_service
+    verbose: 2
 
-- name: Create mariadb deployment 
+- name: Create mariadb deployment
   k8s_v1beta1_stateful_set:
     host: "{{coe_host}}"
     context: "{{kube_context}}"
     kubeconfig: "{{config_file}}"
     name: mariadb
-    namespace: openstack 
-    state: present 
+    namespace: openstack
+    state: present
     debug: yes
     spec_service_name: mariadb
     spec_template_metadata_name: mariadb
     spec_template_metadata_labels:
-      app: mariadb 
+      app: mariadb
       galera: enabled
     containers:
-      - name: mariadb 
-        image: tripleoupstream/centos-binary-mariadb 
+      - name: mariadb
+        image: tripleoupstream/centos-binary-mariadb
         ports:
-        - container_port: 3306 
-        - container_port: 4567 
+        - container_port: 3306
+        - container_port: 4567
         - container_port: 4444
         env:
         - name: KOLLA_CONFIG_STRATEGY
@@ -129,9 +131,9 @@
         config_map:
           name: mariadb
           items:
-            - key: server-cnf 
+            - key: server-cnf
               path: server.cnf
-        
+
   register: create_deployment
   tags:
     - statefulset
