@@ -15,6 +15,7 @@ Role Variables
 
 | Name              | Default Value       | Description          |
 |-------------------|---------------------|----------------------|
+| `action` | `provision` | List of tasks to run. |
 | `core_host` | `https://rhev-i32c-03.mpc.lab.eng.bos.redhat.com:6443` |  |
 | `kube_context` | `kubernetes-admin@kubernetes` |  |
 | `config_file` | `/root/.kube/config` |  |
