@@ -42,7 +42,7 @@
 
 - debug:
     var: create_service
-    verbose: 2
+    verbosity: 2
 
 - name: Create mariadb deployment
   k8s_v1beta1_stateful_set:
