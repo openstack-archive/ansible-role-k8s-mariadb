@@ -20,6 +20,8 @@
         [mysqld]
         pid-file=/var/lib/mysql/mariadb.pid
 
+- include: hiera.yaml
+
 - name: Create mariadb service
   k8s_v1_service:
     host: "{{coe_host}}"
