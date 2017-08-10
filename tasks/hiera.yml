@@ -11,3 +11,7 @@
       mysql_clustercheck_password: clustercheck_password
       mysql_max_connections: mysql_max_connections
     fact_variable: 'mariadb_config'
+
+- debug:
+    var: mariadb_config
+    verbosity: 2

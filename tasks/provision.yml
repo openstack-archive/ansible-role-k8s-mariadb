@@ -42,10 +42,6 @@
       service.alpha.kubernetes.io/tolerate-unready-endpoints: "false"
   register: create_service
 
-- debug:
-    var: create_service
-    verbosity: 2
-
 - name: Create mariadb deployment
   k8s_v1beta1_stateful_set:
     host: "{{coe_host}}"
@@ -73,7 +69,7 @@
         - name: KOLLA_KUBERNETES
           value: ""
         - name: DB_ROOT_PASSWORD
-          value: weakpassword
+          value: '{{mariadb_config.root_password}}'
         volume_mounts:
         - name: kolla-config
           mountPath: /var/lib/kolla/config_files/
@@ -102,7 +98,7 @@
               },
               {
                 "name": "DB_ROOT_PASSWORD",
-                "value": "weakpassword"
+                "value": "{{mariadb_config.root_password}}"
               }
             ],
             "volumeMounts": [
