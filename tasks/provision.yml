@@ -42,6 +42,27 @@
       service.alpha.kubernetes.io/tolerate-unready-endpoints: "false"
   register: create_service
 
+- set_fact:
+    init_container:
+      - name: bootstrap
+        image: tripleoupstream/centos-binary-mariadb
+        env:
+          - name: KOLLA_KUBERNETES
+            value: ""
+          - name: KOLLA_BOOTSTRAP
+            value: ""
+          - name: KOLLA_CONFIG_STRATEGY
+            value: "COPY_ALWAYS"
+          - name: DB_ROOT_PASSWORD
+            value: "{{mariadb_config.root_password}}"
+        volumeMounts:
+          - name: kolla-config
+            mountPath: /var/lib/kolla/config_files/
+          - name: mariadb-config
+            mountPath: /etc/my.cnf.d
+          - name: mariadb-pvc
+            mountPath: /var/lib/mysql
+
 - name: Create mariadb deployment
   k8s_v1beta1_stateful_set:
     host: "{{coe_host}}"
@@ -79,44 +100,7 @@
           mountPath: /var/lib/mysql
     replicas: 1
     spec_template_metadata_annotations:
-      pod.beta.kubernetes.io/init-containers: '[
-          {
-            "name": "bootstrap",
-            "image": "tripleoupstream/centos-binary-mariadb",
-            "env": [
-              {
-                "name": "KOLLA_KUBERNETES",
-                "value": ""
-              },
-              {
-                "name": "KOLLA_BOOTSTRAP",
-                "value": ""
-              },
-              {
-                "name": "KOLLA_CONFIG_STRATEGY",
-                "value": "COPY_ALWAYS"
-              },
-              {
-                "name": "DB_ROOT_PASSWORD",
-                "value": "{{mariadb_config.root_password}}"
-              }
-            ],
-            "volumeMounts": [
-              {
-                "name": "kolla-config",
-                "mountPath": "/var/lib/kolla/config_files/"
-              },
-              {
-                "name": "mariadb-config",
-                "mountPath": "/etc/my.cnf.d"
-              },
-              {
-                "name": "mariadb-pvc",
-                "mountPath": "/var/lib/mysql"
-              }
-            ]
-          }
-        ]'
+      pod.beta.kubernetes.io/init-containers: '{{init_container | to_json}}'
     volumes:
       - name: mariadb-pvc
       - name: kolla-config
