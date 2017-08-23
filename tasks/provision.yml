@@ -62,6 +62,20 @@
             mountPath: /etc/my.cnf.d
           - name: mariadb-pvc
             mountPath: /var/lib/mysql
+        volumes:
+          - name: mariadb-pvc
+          - name: kolla-config
+            config_map:
+              name: mariadb
+              items:
+                - key: kolla-config
+                  path: config.json
+          - name: mariadb-config
+            config_map:
+              name: mariadb
+              items:
+                - key: server-cnf
+                  path: server.cnf
 
 - name: Create mariadb deployment
   k8s_v1beta1_stateful_set:
