@@ -4,7 +4,7 @@ config_file: "~/.kube/config"
 action: provision
 
 hiera_data: {}
-hiera_data_file: '/etc/puppet/hieradata/service_configs.json'
+hiera_data_file: ''
 
 mariadb_config:
   root_password: weakpassword
