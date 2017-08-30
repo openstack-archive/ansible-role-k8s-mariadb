@@ -5,7 +5,7 @@
     context: "{{kube_context}}"
     kubeconfig: "{{config_file}}"
     name: mariadb
-    namespace: openstack
+    namespace: "{{namespace}}"
     state: present
     debug: yes
     labels:
@@ -28,7 +28,7 @@
     context: "{{kube_context}}"
     kubeconfig: "{{config_file}}"
     name: mariadb
-    namespace: openstack
+    namespace: "{{namespace}}"
     state: present
     ports:
       - port: 3306
@@ -83,7 +83,7 @@
     context: "{{kube_context}}"
     kubeconfig: "{{config_file}}"
     name: mariadb
-    namespace: openstack
+    namespace: "{{namespace}}"
     state: present
     debug: yes
     spec_service_name: mariadb

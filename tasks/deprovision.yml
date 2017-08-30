@@ -4,7 +4,7 @@
     context: "{{kube_context}}"
     kubeconfig: "{{config_file}}"
     name: mariadb
-    namespace: openstack 
+    namespace: "{{namespace}}" 
     state: absent 
 
 - name: Delete mariadb service 
@@ -13,7 +13,7 @@
     context: "{{kube_context}}"
     kubeconfig: "{{config_file}}"
     name: mariadb
-    namespace: openstack 
+    namespace: "{{namespace}}" 
     state: absent 
 
 - name: Delete mariadb configmap 
