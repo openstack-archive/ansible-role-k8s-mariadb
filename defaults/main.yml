@@ -2,10 +2,13 @@ coe_host: "https://127.0.0.1:8443"
 kube_context: "kubernetes-admin@kubernetes"
 config_file: "~/.kube/config"
 action: provision
+
+service_name: mariadb
 namespace: openstack
 
 hiera_data: {}
 hiera_data_file: ''
 
 mariadb_config:
+  host: '{{service_name}}'
   root_password: weakpassword

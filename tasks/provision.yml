@@ -134,4 +134,44 @@
   tags:
     - statefulset
 
+- set_fact:
+    my_cnf: |
+      [mysql]
+      user=root
+      host={{mariadb_config.host}}
+      password='{{mariadb_config.root_password}}'
+
+      [client]
+      user=root
+      host={{mariadb_config.host}}
+      password='{{mariadb_config.root_password}}'
+
+      [mysqldump]
+      user=root
+      host={{mariadb_config.host}}
+      password='{{mariadb_config.root_password}}'
+
+      [mysqladmin]
+      user=root
+      host={{mariadb_config.host}}
+      password='{{mariadb_config.root_password}}'
+
+      [mysqlcheck]
+      user=root
+      host={{mariadb_config.host}}
+      password='{{mariadb_config.root_password}}'
+
+- name: Create mariadb root secret
+  k8s_v1_secret:
+    host: "{{coe_host}}"
+    context: "{{kube_context}}"
+    kubeconfig: "{{config_file}}"
+    name: mariadb-root
+    namespace: "{{namespace}}"
+    state: present
+    data:
+      my.cnf: |
+        {{my_cnf | b64encode}}
+
+
 - debug: var=create_deployment
