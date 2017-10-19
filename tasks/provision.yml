@@ -2,8 +2,8 @@
   ignore_errors: yes
   k8s_v1_config_map:
     host: "{{coe_host}}"
-    context: "{{kube_context}}"
-    kubeconfig: "{{config_file}}"
+    context: "{{coe_config_context}}"
+    kubeconfig: "{{coe_config_file}}"
     name: mariadb
     namespace: "{{namespace}}"
     state: present
@@ -25,8 +25,8 @@
 - name: Create mariadb service
   k8s_v1_service:
     host: "{{coe_host}}"
-    context: "{{kube_context}}"
-    kubeconfig: "{{config_file}}"
+    context: "{{coe_config_context}}"
+    kubeconfig: "{{coe_config_file}}"
     name: mariadb
     namespace: "{{namespace}}"
     state: present
@@ -80,8 +80,8 @@
 - name: Create mariadb deployment
   k8s_v1beta1_stateful_set:
     host: "{{coe_host}}"
-    context: "{{kube_context}}"
-    kubeconfig: "{{config_file}}"
+    context: "{{coe_config_context}}"
+    kubeconfig: "{{coe_config_file}}"
     name: mariadb
     namespace: "{{namespace}}"
     state: present
@@ -164,8 +164,8 @@
 - name: Create mariadb root secret
   k8s_v1_secret:
     host: "{{coe_host}}"
-    context: "{{kube_context}}"
-    kubeconfig: "{{config_file}}"
+    context: "{{coe_config_context}}"
+    kubeconfig: "{{coe_config_file}}"
     name: mariadb-root
     namespace: "{{namespace}}"
     state: present
