@@ -1,0 +1,12 @@
+- name: Provision mariadb
+  hosts: localhost
+  gather_facts: false
+  connection: local
+
+  vars:
+    namespace: default
+    coe_host: "http://localhost:8080"
+
+  roles:
+    - role: {{project_name}}
+      playbook_debug: false

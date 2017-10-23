@@ -170,8 +170,4 @@
     namespace: "{{namespace}}"
     state: present
     data:
-      my.cnf: |
-        {{my_cnf | b64encode}}
-
-
-- debug: var=create_deployment
+      my.cnf: "{{ my_cnf | b64encode }}"
