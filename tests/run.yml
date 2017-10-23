@@ -1,0 +1,31 @@
+---
+- hosts: all
+  vars:
+    logs_dir: "/tmp/logs"
+    bastion: false
+  tasks:
+    - add_host:
+        name: "{{item}}"
+        group: kube-master
+        ansible_become: true
+        ansible_host: "{{ hostvars[item]['ansible_host'] }}"
+        ansible_user: "{{ hostvars[item]['ansible_user'] }}"
+      with_items: "{{ hostvars }}"
+
+    - add_host:
+        name: "{{item}}"
+        group: kube-node
+        ansible_become: true
+        ansible_host: "{{ hostvars[item]['ansible_host'] }}"
+        ansible_user: "{{ hostvars[item]['ansible_user'] }}"
+      with_items: "{{ hostvars }}"
+
+    - add_host:
+        name: kube-master
+        group: kube-cluster:children
+
+    - add_host:
+        name: kube-node
+        group: kube-cluster:children
+
+  include: "/tmp/kubespray/cluster.yml"
