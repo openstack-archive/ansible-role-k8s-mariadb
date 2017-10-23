@@ -1,0 +1,46 @@
+---
+- hosts: all
+  tasks:
+    - set_fact:
+        nodes: |
+          {% for host in hostvars %}
+          {{ host }} ansible_host={{ hostvars[host]['ansible_host'] }} ansible_become=true ansible_user={{ hostvars[host]['ansible_user'] }}
+          {% endfor %}
+
+    - name: Build inventory
+      template:
+        src: "{{ zuul.executor.work_root }}/{{ zuul.project.src_dir }}/tests/templates/inventory.j2"
+        dest: "/tmp/kubespray/ci_inventory"
+      delegate_to: "primary"
+
+    - name: install requirements
+      pip:
+        requirements: "{{ ansible_env.HOME }}/{{ zuul.project.src_dir }}/requirements.txt"
+      become: true
+
+    - shell:
+        cmd: |
+          set -e
+          set -x
+          export NODEPOOL_TARBALLS_MIRROR=http://{{ zuul_site_mirror_fqdn }}:8080/tarballs
+
+          ansible-playbook -i ci_inventory --skip-tags bastion-ssh-config cluster.yml
+        executable: /bin/bash
+        chdir: "/tmp/kubespray"
+      delegate_to: "primary"
+      environment: '{{ zuul | zuul_legacy_vars }}'
+      register: kubespray_output
+
+    - debug:
+        var: kubespray_output
+
+- name: Provision mariadb
+  hosts: all
+  gather_facts: false
+
+  roles:
+    - role: ansible.kubernetes-modules
+      install_python_requirements: no
+
+    - role: ansible-role-k8s-mariadb
+      playbook_debug: false
