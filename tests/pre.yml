@@ -1,0 +1,38 @@
+---
+- hosts: all
+  vars:
+    logs_dir: "/tmp/logs"
+  tasks:
+    - name: Ensure /tmp/logs/ dir
+      file:
+        path: "{{ logs_dir }}"
+        state: "directory"
+
+    - name: Ensure node directories
+      file:
+        path: "{{ logs_dir }}/{{ item }}"
+        state: "directory"
+        mode: 0777
+      with_items:
+        - "docker_logs"
+        - "system_logs"
+        - "ansible"
+
+    - include: pre_rhel.yml
+      when: ansible_os_family == 'RedHat'
+
+    - include: pre_debian.yml
+      when: ansible_os_family == 'Debian'
+
+    - name: Create symlink for this role
+      become: true
+      file:
+        src: "{{ zuul.executor.work_root }}/{{ zuul.project.src_dir }}"
+        dest: "/etc/ansible/roles/ansible.role-k8s-mariadb"
+        owner: "{{ hostvars[host]['ansible_user'] }}"
+        state: link
+
+    - name: Clone kubespray
+      git:
+        repo: https://github.com/kubernetes-incubator/kubespray/
+        dest: "/tmp/kubespray"
