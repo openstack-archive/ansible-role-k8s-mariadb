@@ -171,7 +171,6 @@
     state: present
     data:
       my.cnf: |
-        {{my_cnf | b64encode}}
-
-
-- debug: var=create_deployment
+        {{ my_cnf | b64encode | replace('\n', '') }}
+  # TODO(flaper87): REMOVE ASAP
+  ignore_errors: yes
