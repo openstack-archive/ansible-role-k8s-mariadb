@@ -1,0 +1,30 @@
+- project:
+    name: openstack/ansible-role-k8s-mariadb
+    check:
+      jobs:
+        - ansible-role-k8s-mariadb-centos
+
+- nodeset:
+    name: ansible-role-k8s-centos
+    nodes:
+      - name: primary
+        label: centos-7
+
+- job:
+    name: ansible-role-k8s-base
+    pre-run: tests/pre
+    run: tests/run
+    post-run: tests/post
+    attempts: 1
+    timeout: 10800
+    required-projects:
+      - openstack/ansible-role-k8s-mariadb
+      - openstack/requirements
+    irrelevant-files:
+      - ^.*\.rst$
+      - ^doc/.*
+
+- job:
+    name: ansible-role-k8s-mariadb-centos
+    parent:  ansible-role-k8s-base
+    nodeset: ansible-role-k8s-centos
