@@ -1,0 +1,52 @@
+---
+- name: Add ASB repo for ansible-kubernetes-modules
+  become: true
+  yum_repository:
+    name: asb
+    description: Copr repo for ansible-service-broker-latest owned by @ansible-service-broker
+    file: asb
+    baseurl: https://copr-be.cloud.fedoraproject.org/results/@ansible-service-broker/ansible-service-broker-latest/epel-7-$basearch/
+    gpgkey: https://copr-be.cloud.fedoraproject.org/results/@ansible-service-broker/ansible-service-broker-latest/pubkey.gpg
+    gpgcheck: true
+    enabled: false
+    skip_if_unavailable: true
+    repo_gpgcheck: false
+
+- name: Enable/Install epel-release/centos-release-openshift-origin
+  become: true
+  yum:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - epel-release
+    - centos-release-openshift-origin
+
+- name: Force update for requests/urllib3
+  become: true
+  yum:
+    name: "{{item}}"
+    state: latest
+    enablerepo: asb
+    disablerepo: centos-openstack-ocata
+  with_items:
+    - python-requests
+    - python2-urllib3
+
+- name: Install required packages
+  become: true
+  yum:
+    name: "{{item}}"
+    state: latest
+  with_items:
+    - ansible
+    - python-netaddr
+
+- name: Install required packages from asb
+  become: true
+  yum:
+    name: "{{item}}"
+    state: latest
+    enablerepo: asb
+    disablerepo: centos-openstack-ocata
+  with_items:
+    - ansible-kubernetes-modules
