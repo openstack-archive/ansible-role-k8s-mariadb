@@ -1,0 +1,51 @@
+---
+- hosts: all
+  vars:
+    logs_dir: "/tmp/logs"
+  tasks:
+    - name: Ensure /tmp/logs/ dir
+      file:
+        path: "{{ logs_dir }}"
+        state: "directory"
+
+    - name: Ensure node directories
+      file:
+        path: "{{ logs_dir }}/{{ item }}"
+        state: "directory"
+        mode: 0777
+      with_items:
+        - "docker_logs"
+        - "system_logs"
+        - "ansible"
+
+    - include: pre_rhel.yml
+      when: ansible_os_family == 'RedHat'
+
+    - include: pre_debian.yml
+      when: ansible_os_family == 'Debian'
+
+    - name: Create symlink for this role
+      become: true
+      file:
+        src: "{{ ansible_env.HOME }}/{{ zuul.project.src_dir }}"
+        dest: "/etc/ansible/roles/ansible-role-k8s-mariadb"
+        state: link
+      delegate_to: primary
+
+    - name: Clone kubespray
+      git:
+        repo: https://github.com/kubernetes-incubator/kubespray/
+        dest: "/tmp/kubespray"
+      delegate_to: primary
+
+    - name: Clone ansible-role-k8s-tripleo for now
+      git:
+        repo: https://github.com/tripleo-apb/ansible-role-k8s-tripleo
+        dest: "/etc/ansible/roles/ansible-role-k8s-tripleo"
+      delegate_to: primary
+
+    - name: Clone ansible-role-k8s-tripleo for now
+      git:
+        repo: https://github.com/openstack/openstack-ansible-plugins
+        dest: "/etc/ansible/roles/openstack-ansible-plugins"
+      delegate_to: primary
