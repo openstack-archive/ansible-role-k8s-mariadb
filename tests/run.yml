@@ -1,0 +1,35 @@
+---
+- hosts: all
+  vars:
+    inventory_file: '/etc/ansible-role-k8s-mariadb/inventory'
+  tasks:
+    - name: ensure /etc/ansible-role-k8s-mariadb exists
+      file:
+        path: "/etc/ansible-role-k8s-mariadb"
+        state: "directory"
+        mode: 0777
+      become: true
+
+    - set_fact:
+        nodes: |
+          {% for host in hostvars %}
+          {{ host }} ansible_host={{ hostvars[host]['ansible_host'] }} ansible_become=true ansible_user={{ hostvars[host]['ansible_user'] }}
+          {% endfor %}
+
+    - name: Build inventory
+      template:
+        src: "{{ zuul.executor.work_root }}/{{ zuul.project.src_dir }}/tests/templates/inventory.j2"
+        dest: "{{inventory_file}}"
+      delegate_to: "primary"
+
+    - shell:
+        cmd: |
+          set -e
+          set -x
+          export NODEPOOL_TARBALLS_MIRROR=http://{{ zuul_site_mirror_fqdn }}:8080/tarballs
+
+          ansible-playbook -i {{inventory_file}} /tmp/kubespray/cluster.yml
+        executable: /bin/bash
+        chdir: "{{ zuul.project.src_dir }}"
+      delegate_to: "primary"
+      environment: '{{ zuul | zuul_legacy_vars }}'
