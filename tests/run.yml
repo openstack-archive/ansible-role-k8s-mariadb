@@ -1,7 +1,5 @@
 ---
 - hosts: all
-  vars:
-    project_name: ansible-role-k8s-mariadb
   tasks:
     - set_fact:
         nodes: |
@@ -9,29 +7,13 @@
           {{ host }} ansible_host={{ hostvars[host]['ansible_host'] }} ansible_become=true ansible_user={{ hostvars[host]['ansible_user'] }}
           {% endfor %}
 
-    - name: Build inventory
-      template:
-        src: "{{ zuul.executor.work_root }}/{{ zuul.project.src_dir }}/tests/templates/inventory.j2"
-        dest: "/tmp/kubespray/ci_inventory"
-      delegate_to: "primary"
-
     - name: Build playbook
       template:
         src: "{{ zuul.executor.work_root }}/{{ zuul.project.src_dir }}/tests/templates/playbook.j2"
         dest: "{{ ansible_env.HOME }}/{{ zuul.project.src_dir }}/playbook.yml"
       delegate_to: "primary"
 
-    - shell:
-        cmd: |
-          set -e
-          set -x
-
-          ansible-playbook -i ci_inventory --skip-tags bastion-ssh-config -e skip_downloads=true cluster.yml
-        executable: /bin/bash
-        chdir: "/tmp/kubespray"
-      delegate_to: "primary"
-      environment: '{{ zuul | zuul_legacy_vars }}'
-      register: kubespray_output
+    - include: 'roles/{{coe}}/tasks/pre.yml'
 
     - shell:
         cmd: |
