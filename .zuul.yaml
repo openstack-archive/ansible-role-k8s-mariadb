@@ -19,6 +19,9 @@
     timeout: 10800
 
 - job:
-    name: ansible-role-k8s-mariadb-centos
+    name: ansible-role-k8s-mariadb-kubernetes-centos
     parent:  ansible-role-k8s-base
     nodeset: ansible-role-k8s-centos
+    vars:
+      coe: kubernetes
+      project_name: ansible-role-k8s-mariadb
