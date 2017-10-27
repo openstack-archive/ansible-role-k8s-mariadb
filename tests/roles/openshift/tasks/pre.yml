@@ -1,0 +1,6 @@
+---
+- include: pre_rhel.yml
+  when: ansible_os_family == 'RedHat'
+
+- include: pre_debian.yml
+  when: ansible_os_family == 'Debian'
