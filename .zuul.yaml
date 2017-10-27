@@ -3,6 +3,7 @@
     check:
       jobs:
         - ansible-role-k8s-mariadb-kubernetes-centos
+        - ansible-role-k8s-mariadb-openshift-centos
 
 - nodeset:
     name: ansible-role-k8s-centos
@@ -24,4 +25,12 @@
     nodeset: ansible-role-k8s-centos
     vars:
       coe: kubernetes
+      project_name: ansible-role-k8s-mariadb
+
+- job:
+    name: ansible-role-k8s-mariadb-openshift-centos
+    parent:  ansible-role-k8s-base
+    nodeset: ansible-role-k8s-centos
+    vars:
+      coe: openshift
       project_name: ansible-role-k8s-mariadb
