@@ -1,0 +1,24 @@
+---
+- shell:
+    cmd: |
+      set -e
+      set -x
+
+      oc cluster up
+    executable: /bin/bash
+  become: true
+  delegate_to: "primary"
+  environment: '{{ zuul | zuul_legacy_vars }}'
+  register: oc_output
+
+- name: Login to OpenShift
+  shell:
+    cmd: |
+      set -e
+      set -x
+
+      oc login https://127.0.0.1:8443 --insecure-skip-tls-verify=true -u developer -p developer
+      oc new-project openstack
+    executable: /bin/bash
+  delegate_to: "primary"
+  environment: '{{ zuul | zuul_legacy_vars }}'
