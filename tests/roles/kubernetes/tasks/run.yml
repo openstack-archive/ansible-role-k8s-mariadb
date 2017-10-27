@@ -11,6 +11,7 @@
       set -x
 
       ansible-playbook -i ci_inventory --skip-tags bastion-ssh-config -e skip_downloads=true cluster.yml
+      kubectl create namespace openstack
     executable: /bin/bash
     chdir: "/tmp/kubespray"
   delegate_to: "primary"

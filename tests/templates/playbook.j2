@@ -4,8 +4,10 @@
   connection: local
 
   vars:
-    namespace: default
+    namespace: openstack
+{% if coe == 'kubernetes' %}
     coe_host: "http://localhost:8080"
+{% endif %}
 
   roles:
     - role: {{project_name}}
