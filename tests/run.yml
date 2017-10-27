@@ -20,6 +20,7 @@
           set -e
           set -x
 
+          kubectl create namespace openstack
           ansible-playbook -vvvvvv playbook.yml
         executable: /bin/bash
         chdir: "{{ ansible_env.HOME }}/{{ zuul.project.src_dir }}"
