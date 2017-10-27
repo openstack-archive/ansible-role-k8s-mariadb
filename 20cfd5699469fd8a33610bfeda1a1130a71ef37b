@@ -1,0 +1,8 @@
+Code-Review+2: Flavio Percoco <fpercoco@redhat.com>
+Workflow+1: Flavio Percoco <fpercoco@redhat.com>
+Verified+2: Zuul
+Submitted-by: Zuul
+Submitted-at: Fri, 27 Oct 2017 11:40:10 +0000
+Reviewed-on: https://review.openstack.org/515479
+Project: openstack/ansible-role-k8s-mariadb
+Branch: refs/heads/master
