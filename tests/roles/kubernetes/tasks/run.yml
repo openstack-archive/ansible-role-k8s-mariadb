@@ -1,7 +1,7 @@
 ---
 - name: Build inventory
   template:
-    src: "{{ zuul.executor.work_root }}/{{ zuul.project.src_dir }}/tests/roles/kubernetes/templates/inventory.j2"
+    src: "../templates/inventory.j2"
     dest: "/tmp/kubespray/ci_inventory"
   delegate_to: "primary"
 

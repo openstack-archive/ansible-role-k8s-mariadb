@@ -9,7 +9,7 @@
 
     - name: Build playbook
       template:
-        src: "{{ zuul.executor.work_root }}/{{ zuul.project.src_dir }}/tests/templates/playbook.j2"
+        src: "templates/playbook.j2"
         dest: "{{ ansible_env.HOME }}/{{ zuul.project.src_dir }}/playbook.yml"
       delegate_to: "primary"
 
