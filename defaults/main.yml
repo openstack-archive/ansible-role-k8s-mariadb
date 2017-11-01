@@ -6,9 +6,6 @@ action: provision
 service_name: mariadb
 namespace: openstack
 
-hiera_data: {}
-hiera_data_file: ''
-
 mariadb_config:
   host: '{{service_name}}'
   root_password: weakpassword
