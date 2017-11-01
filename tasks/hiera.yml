@@ -1,9 +1,7 @@
 - name: Translate hieradata
-  include_role:
-    name: 'ansible-role-k8s-tripleo'
-  vars:
-    hieradata: '{{hiera_data}}'
-    hieradata_file: '{{hiera_data_file}}'
+  parse_tripleo_hiera:
+    hieradata_file: '{{ hieradata_file }}'
+    hieradata: '{{ hieradata }}'
     schema:
       tripleo::profile::base::database::mysql::bind_address: bind_address
       tripleo::profile::base::database::mysql::mysql_server_options: mysql_server_options
@@ -11,7 +9,17 @@
       mysql_clustercheck_password: clustercheck_password
       mysql_max_connections: mysql_max_connections
     default: '{{mariadb_config}}'
-    fact_variable: 'mariadb_config'
+  when:
+    - hieradata or hieradata_file
+    - schema
+  register: result
+
+- name: Set facts
+  set_fact:
+    mariadb_config: '{{result.conf_dict}}'
+  when:
+    - result.conf_dict is defined
+    - fact_variable != ''
 
 - debug:
     var: mariadb_config
