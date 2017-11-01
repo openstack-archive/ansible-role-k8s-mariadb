@@ -22,7 +22,7 @@
 
     - include: 'roles/{{coe}}/tasks/pre.yml'
 
-    - name: Create symlink for this role
+    - name: Create symlink for all required projects
       become: true
       file:
         src: "{{ ansible_env.HOME }}/{{ item.src_dir }}"
@@ -30,10 +30,3 @@
         state: link
       delegate_to: primary
       with_items: "{{zuul.projects}}"
-
-    - name: Clone ansible-role-k8s-tripleo for now
-      become: true
-      git:
-        repo: https://github.com/tripleo-apb/ansible-role-k8s-tripleo
-        dest: "/etc/ansible/roles/ansible-role-k8s-tripleo"
-      delegate_to: primary
