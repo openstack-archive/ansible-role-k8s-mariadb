@@ -10,5 +10,9 @@
 {% endif %}
 
   roles:
+{% for dep in ansible_role_k8s_required|default('', true) %}
+    - role: {{dep}}
+      playbook_debug: false
+{% endfor %}
     - role: {{project_name}}
       playbook_debug: false
