@@ -25,7 +25,10 @@ copy_logs() {
         cp -rvnL $HOME/.ansible/* ${LOG_DIR}/ansible/
     fi
 
+    # Backup etc
     cp -rvnL /etc ${LOG_DIR}/
+    cp /etc/sudoers ${LOG_DIR}/etc/sudoers.txt
+
     cp -rvnL /var/log/* ${LOG_DIR}/system_logs/
     cp -rvnL /tmp/kubespray ${LOG_DIR}/
 
@@ -36,9 +39,6 @@ copy_logs() {
     else
         cp /var/log/upstart/docker.log ${LOG_DIR}/system_logs/docker.log
     fi
-
-    cp -r /etc/sudoers.d ${LOG_DIR}/system_logs/
-    cp /etc/sudoers ${LOG_DIR}/system_logs/sudoers.txt
 
     df -h > ${LOG_DIR}/system_logs/df.txt
     free  > ${LOG_DIR}/system_logs/free.txt
@@ -63,6 +63,16 @@ copy_logs() {
         for container in $(docker ps -a --format "{{.Names}}"); do
             docker logs --tail all ${container} > ${LOG_DIR}/docker_logs/${container}.txt
         done
+    fi
+
+
+    if [ `command -v kubectl` ]; then
+        if [ `command -v oc` ]; then
+            oc login -u system:admin
+        fi
+
+        (kubectl version && kubectl cluster-info dump && kubectl config view) > ${LOG_DIR}/system_logs/k8s-info.txt 2>&1
+        kubectl describe all > ${LOG_DIR}/system_logs/k8s-describe-all.txt 2>&1
     fi
 
     # Rename files to .txt; this is so that when displayed via
