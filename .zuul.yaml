@@ -14,7 +14,7 @@
 - job:
     name: ansible-role-k8s-base
     pre-run: tests/pre
-    run: tests/run
+    run: tests/run.yml
     post-run: tests/post
     attempts: 1
     timeout: 10800
