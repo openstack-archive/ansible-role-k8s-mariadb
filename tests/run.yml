@@ -26,3 +26,9 @@
       delegate_to: "primary"
       environment: '{{ zuul | zuul_legacy_vars }}'
       register: "{{project_name}}-output"
+
+    - include: "{{ item }}"
+      with_first_found:
+        - files:
+            - '{{ ansible_env.HOME }}/{{ zuul.project.src_dir }}/tests/test.yml'
+          skip: true
