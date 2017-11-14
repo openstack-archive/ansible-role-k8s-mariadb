@@ -16,3 +16,10 @@
 {% endfor %}
     - role: {{project_name}}
       playbook_debug: false
+
+  tasks:
+    - include: "{{ item }}"
+      with_first_found:
+        - files:
+            - '{{ ansible_env.HOME }}/{{ zuul.project.src_dir }}/tests/test.yml'
+          skip: true
