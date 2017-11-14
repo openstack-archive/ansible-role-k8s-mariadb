@@ -20,6 +20,7 @@ check_failure() {
 
 copy_logs() {
     LOG_DIR=/tmp/logs
+    SYSTEM_LOGS=$LOG_DIR/logs/
 
     if [[ -d "$HOME/.ansible" ]]; then
         cp -rvnL $HOME/.ansible/* ${LOG_DIR}/ansible/
@@ -29,39 +30,39 @@ copy_logs() {
     cp -rvnL /etc ${LOG_DIR}/
     cp /etc/sudoers ${LOG_DIR}/etc/sudoers.txt
 
-    cp -rvnL /var/log/* ${LOG_DIR}/system_logs/
+    cp -rvnL /var/log/* ${SYSTEM_LOGS}
     cp -rvnL /tmp/kubespray ${LOG_DIR}/
 
 
     if [[ -x "$(command -v journalctl)" ]]; then
-        journalctl --no-pager > ${LOG_DIR}/system_logs/syslog.txt
-        journalctl --no-pager -u docker.service > ${LOG_DIR}/system_logs/docker.log
+        journalctl --no-pager > ${SYSTEM_LOGS}/syslog.txt
+        journalctl --no-pager -u docker.service > ${SYSTEM_LOGS}/docker.log
     else
-        cp /var/log/upstart/docker.log ${LOG_DIR}/system_logs/docker.log
+        cp /var/log/upstart/docker.log ${SYSTEM_LOGS}/docker.log
     fi
 
-    df -h > ${LOG_DIR}/system_logs/df.txt
-    free  > ${LOG_DIR}/system_logs/free.txt
-    parted -l > ${LOG_DIR}/system_logs/parted-l.txt
-    mount > ${LOG_DIR}/system_logs/mount.txt
-    env > ${LOG_DIR}/system_logs/env.txt
+    df -h > ${SYSTEM_LOGS}/df.txt
+    free  > ${SYSTEM_LOGS}/free.txt
+    parted -l > ${SYSTEM_LOGS}/parted-l.txt
+    mount > ${SYSTEM_LOGS}/mount.txt
+    env > ${SYSTEM_LOGS}/env.txt
 
     if [ `command -v dpkg` ]; then
-        dpkg -l > ${LOG_DIR}/system_logs/dpkg-l.txt
+        dpkg -l > ${SYSTEM_LOGS}/dpkg-l.txt
     fi
     if [ `command -v rpm` ]; then
-        rpm -qa > ${LOG_DIR}/system_logs/rpm-qa.txt
+        rpm -qa > ${SYSTEM_LOGS}/rpm-qa.txt
     fi
 
     # final memory usage and process list
-    ps -eo user,pid,ppid,lwp,%cpu,%mem,size,rss,cmd > ${LOG_DIR}/system_logs/ps.txt
+    ps -eo user,pid,ppid,lwp,%cpu,%mem,size,rss,cmd > ${SYSTEM_LOGS}/ps.txt
 
     if [ `command -v docker` ]; then
         # docker related information
-        (docker info && docker images && docker ps -a) > ${LOG_DIR}/system_logs/docker-info.txt
+        (docker info && docker images && docker ps -a) > ${SYSTEM_LOGS}/docker-info.txt
 
         for container in $(docker ps -a --format "{{.Names}}"); do
-            docker logs --tail all ${container} > ${LOG_DIR}/docker_logs/${container}.txt
+            docker logs --tail all ${container} > ${SYSTEM_LOGS}/containers/${container}.txt
         done
     fi
 
@@ -71,8 +72,8 @@ copy_logs() {
             oc login -u system:admin
         fi
 
-        (kubectl version && kubectl cluster-info dump && kubectl config view) > ${LOG_DIR}/system_logs/k8s-info.txt 2>&1
-        kubectl describe all --all-namespaces > ${LOG_DIR}/system_logs/k8s-describe-all.txt 2>&1
+        (kubectl version && kubectl cluster-info dump && kubectl config view) > ${SYSTEM_LOGS}/k8s-info.txt 2>&1
+        kubectl describe all --all-namespaces > ${SYSTEM_LOGS}/k8s-describe-all.txt 2>&1
     fi
 
     # Rename files to .txt; this is so that when displayed via
@@ -81,13 +82,13 @@ copy_logs() {
     # download it, etc.
 
     # Rename all .log files to .txt files
-    for f in $(find ${LOG_DIR}/{system_logs,docker_logs} -name "*.log"); do
+    for f in $(find ${SYSTEM_LOGS} -name "*.log"); do
         mv $f ${f/.log/.txt}
     done
 
     chmod -R 777 ${LOG_DIR}
-    find ${LOG_DIR}/{system_logs,docker_logs} -iname '*.txt' -execdir gzip -f -9 {} \+
-    find ${LOG_DIR}/{system_logs,docker_logs} -iname '*.json' -execdir gzip -f -9 {} \+
+    find $SYSTEM_LOGS -iname '*.txt' -execdir gzip -f -9 {} \+
+    find $SYSTEM_LOGS -iname '*.json' -execdir gzip -f -9 {} \+
 }
 
 copy_logs

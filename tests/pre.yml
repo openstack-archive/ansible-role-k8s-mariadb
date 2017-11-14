@@ -16,9 +16,8 @@
         state: "directory"
         mode: 0777
       with_items:
-        - "docker_logs"
-        - "system_logs"
-        - "ansible"
+        - "logs"
+        - "logs/containers"
 
     - include: 'roles/{{coe}}/tasks/pre.yml'
 
