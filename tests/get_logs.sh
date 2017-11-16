@@ -73,7 +73,7 @@ copy_logs() {
         fi
 
         (kubectl version && kubectl cluster-info dump && kubectl config view) > ${SYSTEM_LOGS}/k8s-info.txt 2>&1
-        kubectl describe all --all-namespaces > ${SYSTEM_LOGS}/k8s-describe-all.txt 2>&1
+        (kubectl get pods --all-namespaces && kubectl describe all --all-namespaces) > ${SYSTEM_LOGS}/k8s-describe-all.txt 2>&1
     fi
 
     # Rename files to .txt; this is so that when displayed via
