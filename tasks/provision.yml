@@ -42,8 +42,21 @@
       service.alpha.kubernetes.io/tolerate-unready-endpoints: "false"
   register: create_service
 
-- set_fact:
-    init_container:
+- name: Create mariadb deployment
+  k8s_v1beta1_stateful_set:
+    host: "{{coe_host}}"
+    context: "{{coe_config_context}}"
+    kubeconfig: "{{coe_config_file}}"
+    name: mariadb
+    namespace: "{{namespace}}"
+    state: present
+    debug: yes
+    spec_service_name: mariadb
+    spec_template_metadata_name: mariadb
+    spec_template_metadata_labels:
+      app: mariadb
+      galera: enabled
+    spec_template_spec_init_containers:
       - name: bootstrap
         image: tripleoupstream/centos-binary-mariadb
         env:
@@ -77,20 +90,6 @@
                 - key: server-cnf
                   path: server.cnf
 
-- name: Create mariadb deployment
-  k8s_v1beta1_stateful_set:
-    host: "{{coe_host}}"
-    context: "{{coe_config_context}}"
-    kubeconfig: "{{coe_config_file}}"
-    name: mariadb
-    namespace: "{{namespace}}"
-    state: present
-    debug: yes
-    spec_service_name: mariadb
-    spec_template_metadata_name: mariadb
-    spec_template_metadata_labels:
-      app: mariadb
-      galera: enabled
     containers:
       - name: mariadb
         image: tripleoupstream/centos-binary-mariadb
@@ -113,8 +112,6 @@
         - name: mariadb-pvc
           mountPath: /var/lib/mysql
     replicas: 1
-    spec_template_metadata_annotations:
-      pod.beta.kubernetes.io/init-containers: '{{init_container | to_json}}'
     volumes:
       - name: mariadb-pvc
       - name: kolla-config
