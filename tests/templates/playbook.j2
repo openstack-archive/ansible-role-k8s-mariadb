@@ -1,3 +1,30 @@
+- name: Prepare COE cluster
+  hosts: localhost
+  gather_facts: false
+  connection: local
+
+  vars:
+    namespace: openstack
+{% if coe == 'kubernetes' %}
+    coe_host: "http://localhost:8080"
+{% endif %}
+
+  tasks:
+    - name: Create test PV
+      k8s_v1_persistent_volume:
+        host: "{%raw%}{{coe_host}}{%endraw%}"
+        name: "hostpath-pv"
+        namespace: "{%raw%}{{namespace}}{%endraw%}"
+        state: present
+        accessModes:
+          - ReadWriteMany
+        persistentVolumeReclaimPolicy: Recycle
+        storageClassName: slow
+        mountOptions:
+          - hard
+        hostPath:
+        path: /tmp
+
 - name: Provision {{project_name}}
   hosts: localhost
   gather_facts: false
