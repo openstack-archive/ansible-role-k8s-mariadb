@@ -11,23 +11,15 @@
 
   tasks:
     - name: Create test PV
-      shell:
-        cmd: |
-          cat <<EOF | kubectl create -f -
-          apiVersion: v1
-          kind: PersistentVolume
-          metadata:
-            name: openstack-test-volume
-          spec:
-            capacity:
-              storage: 5Gi
-            accessModes:
-              - ReadWriteMany
-            persistentVolumeReclaimPolicy: Recycle
-            storageClassName: slow
-            hostPath:
-              path: /tmp
-          EOF
+      k8s_v1_persistent_volume:
+        host: "{%raw%}{{coe_host}}{%endraw%}"
+        name: "hostpath-pv"
+        state: present
+        access_modes:
+          - ReadWriteMany
+        persistent_volume_reclaim_policy: Recycle
+        storage_class_name: slow
+        host_path_path: /tmp
 
 - name: Provision {{project_name}}
   hosts: localhost
