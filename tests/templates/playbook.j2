@@ -5,6 +5,7 @@
 
   vars:
     namespace: openstack
+    service_account: default
 {% if coe == 'kubernetes' %}
     coe_host: "http://localhost:8080"
 {% endif %}
@@ -14,6 +15,30 @@
       install_python_requirements: no
 
   tasks:
+    - name: Create OpenStack specific roles
+      k8s_v1alpha_role:
+        host: "{%raw%}{{coe_host}}{%endraw%}"
+        name: openstack-role
+        namespace: "{%raw%}{{namespace}}{%endraw%}"
+        state: present
+        rules:
+          - apiGroups: [""] # "" indicates the core API group
+            resources: ["secrets"]
+            verbs: ["get", "watch", "update", "delete", "list"]
+
+    - name: Create OpenStack role binding
+      k8s_v1alpha_role_binding:
+        host: "{%raw%}{{coe_host}}{%endraw%}"
+        name: openstack-role
+        namespace: "{%raw%}{{namespace}}{%endraw%}"
+        state: present
+        role_ref_kind: Role
+        role_ref_name: openstack-role
+        role_ref_api_group: rbac.authorization.k8s.io
+        subjects:
+        - kind: ServiceAccount
+          name: "{%raw%}{{service_account}}{%endraw%}"
+
     - name: Create test PV
       k8s_v1_persistent_volume:
         host: "{%raw%}{{coe_host}}{%endraw%}"
