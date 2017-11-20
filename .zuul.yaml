@@ -13,9 +13,9 @@
 
 - job:
     name: ansible-role-k8s-base
-    pre-run: tests/pre
+    pre-run: tests/pre.yml
     run: tests/run.yml
-    post-run: tests/post
+    post-run: tests/post.yml
     attempts: 1
     timeout: 10800
     required-projects:
@@ -23,7 +23,7 @@
 
 - job:
     name: ansible-role-k8s-mariadb-kubernetes-centos
-    parent:  ansible-role-k8s-base
+    parent: ansible-role-k8s-base
     nodeset: ansible-role-k8s-centos
     vars:
       coe: kubernetes
