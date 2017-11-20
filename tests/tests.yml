@@ -1,0 +1,14 @@
+---
+- name: Get mariadb cluster ip
+  shell:
+    cmd: |
+      kubectl get service mariadb --namespace {{namespace}} --template={%raw%}{{.spec.clusterIP}}{%endraw%}
+    executable: /bin/bash
+  register: mariadb_ip
+
+- name: Wait for mariadb to become available
+  wait_for:
+    host={{mariadb_ip.stdout}}
+    port=3306
+    delay=1
+    timeout=300
