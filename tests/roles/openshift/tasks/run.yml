@@ -31,6 +31,22 @@
       fsGroup:
         type: RunAsAny
       EOF
+
+      cat <<EOF | kubectl create -f -
+      apiVersion: v1
+      kind: PersistentVolume
+      metadata:
+        name: openstack-test-volume
+      spec:
+        capacity:
+          storage: 5Gi
+        accessModes:
+          - ReadWriteMany
+        persistentVolumeReclaimPolicy: Recycle
+        storageClassName: slow
+        hostPath:
+          path: /tmp
+      EOF
     executable: /bin/bash
   become: true
   delegate_to: "primary"
