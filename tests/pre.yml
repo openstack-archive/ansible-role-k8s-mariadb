@@ -19,6 +19,12 @@
         - "logs"
         - "logs/containers"
 
+    - include: pre_rhel.yml
+      when: ansible_os_family == 'RedHat'
+
+    - include: pre_debian.yml
+      when: ansible_os_family == 'Debian'
+
     - include: 'roles/{{coe}}/tasks/pre.yml'
 
     - name: Create symlink for all required projects
