@@ -28,6 +28,8 @@
     vars:
       coe: kubernetes
       project_name: ansible-role-k8s-mariadb
+    required-projects:
+      - openstack/ansible-role-k8s-mariadb
 
 - job:
     name: ansible-role-k8s-mariadb-openshift-centos
@@ -36,3 +38,5 @@
     vars:
       coe: openshift
       project_name: ansible-role-k8s-mariadb
+    required-projects:
+      - openstack/ansible-role-k8s-mariadb
