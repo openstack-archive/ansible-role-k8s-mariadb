@@ -12,13 +12,12 @@
     skip_if_unavailable: true
     repo_gpgcheck: false
 
-- name: Enable/Install epel-release/centos-release-openshift-origin
+- name: Enable/Install centos-release-openshift-origin
   become: true
   yum:
     name: "{{item}}"
     state: present
   with_items:
-    - epel-release
     - centos-release-openshift-origin
 
 # NOTE(flaper87): python-openshift requires a specific version of
