@@ -1,4 +1,13 @@
 ---
+- name: Enable/Install epel-release/centos-release-openstack-centos
+  become: true
+  yum:
+    name: "{{item}}"
+    state: present
+  with_items:
+    - epel-release
+    - centos-release-openstack-centos
+
 - name: Install required packages
   become: true
   yum:
