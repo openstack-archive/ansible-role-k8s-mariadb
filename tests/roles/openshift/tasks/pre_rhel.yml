@@ -12,14 +12,11 @@
     skip_if_unavailable: true
     repo_gpgcheck: false
 
-- name: Enable/Install epel-release/centos-release-openshift-origin
+- name: Enable/Install delorean
   become: true
-  yum:
-    name: "{{item}}"
-    state: present
-  with_items:
-    - epel-release
-    - centos-release-openshift-origin
+  get_url:
+    url: "https://trunk.rdoproject.org/centos7-master/consistent/delorean.repo"
+    dest: "/etc/yum.repos.d/delorean.repo"
 
 # NOTE(flaper87): python-openshift requires a specific version of
 # python-requests. We need to update it to the version in the asb repo, hence
