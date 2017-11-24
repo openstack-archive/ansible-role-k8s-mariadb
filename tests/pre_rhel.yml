@@ -1,4 +1,15 @@
 ---
+- name: Enable/Install delorean
+  become: true
+  get_url:
+    url: "https://trunk.rdoproject.org/centos7-master/current-tripleo-rdo/delorean.repo"
+    dest: "/etc/yum.repos.d/delorean.repo"
+
+- name: Upgrade all packages
+  yum:
+    name: '*'
+    state: latest
+
 - name: Install required packages
   become: true
   yum:
