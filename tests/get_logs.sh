@@ -41,6 +41,7 @@ copy_logs() {
         cp /var/log/upstart/docker.log ${SYSTEM_LOGS}/docker.log
     fi
 
+    iptables-save > ${SYSTEM_LOGS}/iptables.txt
     df -h > ${SYSTEM_LOGS}/df.txt
     free  > ${SYSTEM_LOGS}/free.txt
     parted -l > ${SYSTEM_LOGS}/parted-l.txt
