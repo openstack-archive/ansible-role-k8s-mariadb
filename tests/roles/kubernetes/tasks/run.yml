@@ -10,7 +10,7 @@
       set -e
       set -x
 
-      ansible-playbook -i ci_inventory --skip-tags bastion-ssh-config -e skip_downloads=true cluster.yml
+      ansible-playbook -i ci_inventory --skip-tags bastion-ssh-config -e skip_downloads=true -e docker_dns_servers_strict=no -e deploy_netchecker=true cluster.yml
       kubectl create namespace openstack
 
       cat <<EOF | kubectl create -f -
