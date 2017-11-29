@@ -1,4 +1,15 @@
 ---
+- name: Call netchecker
+  shell:
+    cmd: |
+      set -eux
+      curl http://localhost:31081/api/v1/connectivity_check
+    executable: /bin/bash
+  register: netchecker
+
+- debug:
+    msg: "{{netchecker.stdout}}"
+
 - name: Get mariadb cluster ip
   shell:
     cmd: |
