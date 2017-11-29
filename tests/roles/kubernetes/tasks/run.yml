@@ -13,6 +13,9 @@
       ansible-playbook -i ci_inventory --skip-tags bastion-ssh-config -e skip_downloads=true -e docker_dns_servers_strict=no -e deploy_netchecker=true cluster.yml
       kubectl create namespace openstack
 
+      sudo mkdir /tmp/test-volume
+      sudo chmod 777 /tmp/test-volume
+
       cat <<EOF | kubectl create -f -
       apiVersion: v1
       kind: PersistentVolume
