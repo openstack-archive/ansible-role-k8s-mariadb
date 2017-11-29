@@ -1,4 +1,52 @@
 ---
+- name: Call netchecker
+  shell:
+    cmd: |
+      set -eux
+      curl http://localhost:31081/api/v1/connectivity_check
+    executable: /bin/bash
+  register: netchecker
+
+- debug:
+    msg: "{{netchecker.stdout}}"
+
+- name: Run busybox
+  shell:
+    cmd: |
+      cat <<EOF | kubectl create -f -
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        name: busybox
+        namespace: {{namespace}}
+      spec:
+        containers:
+        - image: busybox
+          command:
+            - sleep
+            - "7200"
+          imagePullPolicy: IfNotPresent
+          name: busybox
+        restartPolicy: Always
+      EOF
+    executable: /bin/bash
+
+- name: Test DNS with busybox
+  shell:
+    cmd: |
+      kubectl exec --namespace {{namespace}} -ti busybox -- nslookup kubernetes.default
+      kubectl exec --namespace {{namespace}} -ti busybox -- nslookup mariadb
+      kubectl exec --namespace {{namespace}} -ti busybox -- ping -c 4 mariadb
+      exit $?
+    executable: /bin/bash
+  register: busybox_output
+  retries: 10
+  delay: 2
+  until: busybox_output.rc == 0
+
+- debug:
+    msg: "{{busybox_output.stdout}}"
+
 - name: Get mariadb cluster ip
   shell:
     cmd: |

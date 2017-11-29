@@ -19,6 +19,13 @@
         - "logs"
         - "logs/containers"
 
+    - name: "iptables: don't jump straight to openstack-INPUT"
+      become: true
+      iptables:
+        chain: "INPUT"
+        jump: "openstack-INPUT"
+        state: absent
+
     - include: pre_rhel.yml
       when: ansible_os_family == 'RedHat'
 
