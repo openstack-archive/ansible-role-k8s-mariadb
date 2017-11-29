@@ -55,6 +55,8 @@
         name: pod-reader
         apiGroup: rbac.authorization.k8s.io
       EOF
+
+      sudo chmod 777 /tmp/test-volume
     executable: /bin/bash
     chdir: "/tmp/kubespray"
   delegate_to: "primary"
