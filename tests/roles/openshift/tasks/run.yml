@@ -32,6 +32,9 @@
         type: RunAsAny
       EOF
 
+      sudo mkdir /tmp/test-volume
+      sudo chmod 777 /tmp/test-volume
+
       cat <<EOF | kubectl create -f -
       apiVersion: v1
       kind: PersistentVolume
@@ -45,7 +48,7 @@
         persistentVolumeReclaimPolicy: Recycle
         storageClassName: slow
         hostPath:
-          path: /tmp
+          path: /tmp/test-volume
       EOF
     executable: /bin/bash
   become: true
