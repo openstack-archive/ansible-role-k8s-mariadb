@@ -33,7 +33,6 @@
       EOF
 
       sudo mkdir /tmp/test-volume
-      sudo chmod 777 /tmp/test-volume
 
       cat <<EOF | kubectl create -f -
       apiVersion: v1
@@ -50,6 +49,10 @@
         hostPath:
           path: /tmp/test-volume
       EOF
+
+      sudo chown zuul:zuul -R /tmp/test-volume
+      sudo chmod 777 /tmp/test-volume
+
     executable: /bin/bash
   become: true
   delegate_to: "primary"
