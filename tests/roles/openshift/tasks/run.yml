@@ -1,4 +1,27 @@
 ---
+- name: Set various Docker options
+  become: true
+  lineinfile:
+    dest: /etc/sysconfig/docker
+    regexp: '^OPTIONS=.*$'
+    line: "OPTIONS='\
+      --log-driver=journald \
+      --signature-verification=false \
+      --insecure-registry 172.30.0.0/16"
+
+- name: Set various Docker options
+  become: true
+  lineinfile:
+    dest: /etc/sysconfig/docker-storage-setup
+    regexp: '^STORAGE_DRIVER=.*$'
+    line: "STORAGE_DRIVER=overlay2"
+
+- name: restart docker
+  become: true
+  systemd:
+    name: "docker"
+    state: restarted
+
 - shell:
     cmd: |
       set -e
