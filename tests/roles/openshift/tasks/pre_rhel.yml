@@ -58,11 +58,19 @@
 - name: Set docker registry options for OpenShift
   become: true
   lineinfile:
-    path: /etc/sysconfig/docker
-    state: present
-    regexp: "^OPTIONS='(.*)'"
-    line: "OPTIONS='\\1 --insecure-registry 172.30.0.0/16'"
-    backrefs: yes
+    dest: /etc/sysconfig/docker
+    regexp: '^OPTIONS=.*$'
+    line: "OPTIONS='\
+      --log-driver=journald \
+      --signature-verification=false \
+      --insecure-registry 172.30.0.0/16"
+
+- name: Set Docker storage options
+  become: true
+  lineinfile:
+    dest: /etc/sysconfig/docker-storage-setup
+    regexp: '^STORAGE_DRIVER=.*$'
+    line: "STORAGE_DRIVER=overlay2"
 
 - name: Start docker
   become: true
