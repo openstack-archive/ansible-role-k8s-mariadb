@@ -4,7 +4,7 @@
       set -e
       set -x
 
-      oc cluster up
+      oc cluster up --version=v3.6.1
       oc login -u system:admin
       oc delete scc anyuid hostaccess hostmount-anyuid hostnetwork privileged nonroot restricted
 
@@ -34,7 +34,7 @@
 
       sudo mkdir /tmp/test-volume
 
-      cat <<EOF | kubectl create -f -
+      cat <<EOF | oc create -f -
       apiVersion: v1
       kind: PersistentVolume
       metadata:
