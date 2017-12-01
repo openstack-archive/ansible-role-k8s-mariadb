@@ -34,7 +34,7 @@
 
       sudo mkdir /tmp/test-volume
 
-      cat <<EOF | kubectl create -f -
+      cat <<EOF | oc create -f -
       apiVersion: v1
       kind: PersistentVolume
       metadata:
