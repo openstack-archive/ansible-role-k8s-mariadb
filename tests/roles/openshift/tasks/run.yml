@@ -52,6 +52,7 @@
 
       sudo chown zuul:zuul -R /tmp/test-volume
       sudo chmod 777 /tmp/test-volume
+      sudo chcon -t svirt_sandbox_file_t /tmp/test-volume
 
     executable: /bin/bash
   become: true
