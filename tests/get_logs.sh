@@ -32,7 +32,7 @@ copy_logs() {
 
     cp -rvnL /var/log/* ${SYSTEM_LOGS}
     cp -rvnL /tmp/kubespray ${LOG_DIR}/
-    cp -rvnL /tmp/test-volume ${LOG_DIR}/
+    cp -rvnL $HOME/test-volume ${LOG_DIR}/
 
 
     if [[ -x "$(command -v journalctl)" ]]; then

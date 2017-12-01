@@ -32,9 +32,9 @@
         type: RunAsAny
       EOF
 
-      sudo mkdir /tmp/test-volume
+      sudo mkdir $HOME/test-volume
 
-      cat <<EOF | kubectl create -f -
+      cat <<EOF | oc create -f -
       apiVersion: v1
       kind: PersistentVolume
       metadata:
@@ -47,11 +47,11 @@
         persistentVolumeReclaimPolicy: Recycle
         storageClassName: slow
         hostPath:
-          path: /tmp/test-volume
+          path: $HOME/test-volume
       EOF
 
-      sudo chown zuul:zuul -R /tmp/test-volume
-      sudo chmod 777 /tmp/test-volume
+      sudo chown zuul:zuul -R $HOME/test-volume
+      sudo chmod 777 $HOME/test-volume
 
     executable: /bin/bash
   become: true
