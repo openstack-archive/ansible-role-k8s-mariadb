@@ -37,8 +37,8 @@
     - name: Create symlink for all required projects
       become: true
       file:
-        src: "{{ ansible_env.HOME }}/{{ item.src_dir }}"
-        dest: "/etc/ansible/roles/{{ item.short_name }}"
+        src: "{{ ansible_env.HOME }}/{{ item.value.src_dir }}"
+        dest: "/etc/ansible/roles/{{ item.value.short_name }}"
         state: link
       delegate_to: primary
-      with_items: "{{zuul.projects}}"
+      with_dict: "{{zuul.projects}}"
