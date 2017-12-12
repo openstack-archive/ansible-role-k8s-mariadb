@@ -34,6 +34,10 @@
 
     - include: 'roles/{{coe}}/tasks/pre.yml'
 
+    - debug:
+        msg: "{{item}}"
+      with_items: "{{zuul.projects}}"
+
     - name: Create symlink for all required projects
       become: true
       file:
