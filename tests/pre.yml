@@ -41,4 +41,4 @@
         dest: "/etc/ansible/roles/{{ item.short_name }}"
         state: link
       delegate_to: primary
-      with_items: "{{zuul.projects}}"
+      with_dict: "{{zuul.projects}}"
