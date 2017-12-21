@@ -37,25 +37,36 @@
       apiVersion: rbac.authorization.k8s.io/v1
       metadata:
         namespace: openstack
-        name: pod-reader
+        name: openstack:configmaps
       rules:
-        - apiGroups: [""] # "" indicates the core API group
-          resources: ["secrets"]
-          verbs: ["get", "watch", "update", "delete", "list"]
+        - apiGroups: null
+          attributeRestrictions: null
+          resources:
+            - configmaps
+          verbs:
+            - get
+            - list
+            - watch
+            - update
+            - create
+            - delete
+            - list
+            - patch
       EOF
 
       cat <<EOF | kubectl create -f -
       kind: RoleBinding
       apiVersion: rbac.authorization.k8s.io/v1
       metadata:
-        name: read-pods
+        name: openstack:configmaps
         namespace: openstack
       subjects:
       - kind: ServiceAccount
         name: default
       roleRef:
         kind: Role
-        name: pod-reader
+        name: openstack:configmaps
+        namespace: openstack
         apiGroup: rbac.authorization.k8s.io
       EOF
     executable: /bin/bash

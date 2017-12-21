@@ -54,6 +54,44 @@
       sudo chmod 777 /tmp/test-volume
       sudo chcon -t svirt_sandbox_file_t /tmp/test-volume
 
+      cat <<EOF | oc create -f -
+      kind: Role
+      apiVersion: v1
+      metadata:
+        namespace: openstack
+        name: openstack:configmaps
+      rules:
+        - apiGroups: null
+          attributeRestrictions: null
+          resources:
+            - configmaps
+          verbs:
+            - get
+            - list
+            - watch
+            - update
+            - create
+            - delete
+            - list
+            - patch
+      EOF
+
+      cat <<EOF | oc create -f -
+      kind: RoleBinding
+      apiVersion: v1
+      metadata:
+        name: openstack:configmaps
+        namespace: openstack
+      subjects:
+      - kind: ServiceAccount
+        name: default
+      roleRef:
+        kind: Role
+        name: openstack:configmaps
+        namespace: openstack
+        apiGroup: null
+      EOF
+
     executable: /bin/bash
   become: true
   delegate_to: "primary"
