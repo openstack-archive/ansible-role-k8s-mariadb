@@ -58,7 +58,7 @@
       galera: enabled
     spec_template_spec_init_containers:
       - name: bootstrap
-        image: tripleoupstream/centos-binary-mariadb
+        image: "triplemaster/centos-binary-mariadb:current-tripleo"
         env:
           - name: KOLLA_KUBERNETES
             value: ""
@@ -92,7 +92,7 @@
 
     containers:
       - name: mariadb
-        image: tripleoupstream/centos-binary-mariadb
+        image: "tripleomaster/centos-binary-mariadb:current-tripleo"
         ports:
         - container_port: 3306
         - container_port: 4567
