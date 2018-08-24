@@ -33,7 +33,7 @@
 
 - job:
     name: ansible-role-k8s-mariadb-openshift-centos
-    parent:  ansible-role-k8s-base
+    parent: ansible-role-k8s-base
     nodeset: ansible-role-k8s-centos
     vars:
       coe: openshift
