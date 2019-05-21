@@ -1,34 +1,10 @@
-K8S MariaDB
-=========
-[![Galaxy](https://img.shields.io/badge/galaxy-tripleo.k8s--mariadb-blue.svg?style=flat)](https://galaxy.ansible.com/tripleo/k8s-mariadb)
-[![Build Status](https://travis-ci.org/tripleo/ansible-role-k8s-mariadb.svg?branch=master)](https://travis-ci.org/tripleo/ansible-role-k8s-mariadb)
+This project is no longer maintained.
 
-Install MariaDB in a Kubernetes cluster.
+The contents of this repository are still available in the Git
+source code management system.  To see the contents of this
+repository before it reached its end of life, please check out the
+previous commit with "git checkout HEAD^1".
 
-Requirements
-------------
-
-Access to Kubernetes cluster
-
-Role Variables
---------------
-
-| Name              | Default Value       | Description          |
-|-------------------|---------------------|----------------------|
-| `action` | `provision` | List of tasks to run. |
-| `coe_host` | `https://localhost:8443` |  |
-| `coe_config_context` |  |  |
-| `coe_config_file` |  |  |
-
-
-Dependencies
-------------
-
-- `ansible.kubernetes-modules`
-
-Example Playbook
-----------------
-
-    - hosts: all
-      roles:
-         - tripleo.k8s-mariadb
+For any further questions, please email
+openstack-discuss@lists.openstack.org or join #openstack-dev on
+Freenode.
